@@ -8,11 +8,16 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    @IBOutlet var sampleCollectionView: UICollectionView!
+    var sampleImageName = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg", "10.jpg", "11.jpg", "12.jpg", "13.jpg", "14.jpg", "15.jpg", "16.jpeg", "17.jpg" ,"18.jpg" ,"19.jpg" ,"20.jpg" ,"21.jpg" ,"22.jpg" ,"23.png"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        sampleCollectionView.delegate = self
+        sampleCollectionView.dataSource = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -20,6 +25,27 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return sampleImageName.count
+    }
 
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "sampleCell", for: indexPath)
+        let sampleImageView = cell.viewWithTag(7) as! UIImageView
+        sampleImageView.image = UIImage(named: sampleImageName[indexPath.row])
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "toDetail", sender: nil)
+        collectionView.deselectItem(at: indexPath, animated: true)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let detailViewController = segue.destination as! DetailViewController
+        let selectedIndex = sampleCollectionView.indexPathsForSelectedItems![0]
+        detailViewController.imageName = sampleImageName[selectedIndex.row]
+    }
+    
 }
 
